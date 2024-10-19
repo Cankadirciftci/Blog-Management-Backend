@@ -21,8 +21,8 @@ namespace BlogManagement.Controllers
 
         [HttpPost("register")]
 
-        public IActionResult AddUser([FromBody] User user)
-        {
+        public IActionResult AddUser([FromBody] User user){
+        
             if(user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
             {
                 return BadRequest("Geçersiz kullanici bilgileri.");
@@ -33,7 +33,39 @@ namespace BlogManagement.Controllers
 
             return Ok(user);
         }
+         
 
+        [HttpGet]
+        public IActionResult GetUser(){
+
+            var user = _context.Users.ToList();
+            return Ok(user);
+        }
+
+        [HttpGet("{id}")]
+        public IActionResult GetUserId([FromRoute] int id){
+
+            var user = _context.Users.Find(id);
+            if(user == null){
+                return NotFound();
+            }
+
+            return Ok(user);
+
+        }
         
+
+        [HttpDelete("{id}")]
+
+        public IActionResult UserDelete([FromRoute] int id){
+
+            var user = _context.Users.FirstOrDefault(x => x.Id == id);
+            if(user == null){
+                return NotFound();
+            }
+            _context.Users.Remove(user);
+            _context.SaveChanges();
+            return NoContent();
+        }
     }
 }

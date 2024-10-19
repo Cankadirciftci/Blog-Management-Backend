@@ -142,3 +142,4 @@ C:\Users\kadir\Blog Management\BlogManagement\obj\Debug\net8.0\refint\BlogManage
 C:\Users\kadir\Blog Management\BlogManagement\obj\Debug\net8.0\BlogManagement.pdb
 C:\Users\kadir\Blog Management\BlogManagement\obj\Debug\net8.0\BlogManagement.genruntimeconfig.cache
 C:\Users\kadir\Blog Management\BlogManagement\obj\Debug\net8.0\ref\BlogManagement.dll
+C:\Users\kadir\Blog Management\BlogManagement\obj\Debug\net8.0\BlogManagement.sourcelink.json
