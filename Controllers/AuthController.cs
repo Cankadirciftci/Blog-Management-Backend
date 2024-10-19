@@ -8,6 +8,7 @@ using System.Text;
 using System.Linq;
 using BlogManagement.Dtos;
 using BlogManagement.Mappers;
+using BlogManagement.Helpers;
 
 namespace BlogManagement.Controllers
 {
@@ -24,32 +25,55 @@ namespace BlogManagement.Controllers
             _context = context;
         }
 
-      
-[HttpPost("login")]
-public IActionResult Login([FromBody] LoginDto loginDto)
-{
-    var user = Authenticate(loginDto);
-    if (user != null)
-    {
-        var token = GenerateToken(user);
-        return Ok(new { token });
-    }
-    return Unauthorized();
-}
 
-private User Authenticate(LoginDto loginDto)
-{
-    // Kullanıcıyı veritabanından al
-    var user = _context.Users.SingleOrDefault(u => u.Username == loginDto.Username);
+        [HttpPost("login")]
+        public IActionResult Login([FromBody] LoginDto loginDto)
+        {
+            var user = Authenticate(loginDto);
+            if (user != null)
+            {
+                var token = GenerateToken(user);
+                return Ok(new { token });
+            }
+            return Unauthorized();
+        }
 
-    // Kullanıcı varsa ve şifre hash'leri eşleşiyorsa, kullanıcıyı döndür
-    if (user != null && user.PasswordHash == loginDto.PasswordHash)
-    {
-        return user;
-    }
+        [HttpPost("register")]
+        public IActionResult AddUser([FromBody] RegisterDto user)
+        {
+            if (user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
+            {
+                return BadRequest("Geçersiz kullanici bilgileri.");
+            }
+ 
+              user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
 
-    return null;
-}
+            var newUser = new User
+            {
+                Username = user.Username,
+                PasswordHash = user.PasswordHash
+            };
+
+            _context.Users.Add(newUser);
+            _context.SaveChanges();
+
+            return Ok(newUser);
+        }
+
+
+        private User Authenticate(LoginDto loginDto)
+        {
+            // Kullanıcıyı veritabanından al
+            var user = _context.Users.SingleOrDefault(u => u.Username == loginDto.Username);
+
+            // Kullanıcı varsa ve şifre hash'leri eşleşiyorsa, kullanıcıyı döndür
+            if (user != null && user.PasswordHash == loginDto.PasswordHash)
+            {
+                return user;
+            }
+
+            return null;
+        }
 
         private string GenerateToken(User user)
         {

@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using BlogManagement.Data;
 using BlogManagement.Models;
 using Microsoft.AspNetCore.Mvc;
+using BlogManagement.Helpers;
 
 namespace BlogManagement.Controllers
 {
@@ -18,22 +19,6 @@ namespace BlogManagement.Controllers
         {
             _context = context;
         }
-
-        [HttpPost("register")]
-
-        public IActionResult AddUser([FromBody] User user){
-        
-            if(user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
-            {
-                return BadRequest("Geçersiz kullanici bilgileri.");
-            }
-
-            _context.Users.Add(user);
-            _context.SaveChanges();
-
-            return Ok(user);
-        }
-         
 
         [HttpGet]
         public IActionResult GetUser(){
