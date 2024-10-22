@@ -31,7 +31,8 @@ namespace BlogManagement.Controllers
 
         [HttpGet("{id}")]
         public IActionResult GetById([FromRoute] int id){
-            var post = _context.BlogPosts.Find(id);
+            var post = _context.BlogPosts.FirstOrDefault(p => p.UserId == id); 
+             Console.WriteLine($"posts: {post}");
             if(post == null){
                 return NotFound();
             }
@@ -52,7 +53,7 @@ public IActionResult Create([FromBody] CreateBlogPostRequestDto blogpostDto)
         [Microsoft.AspNetCore.Mvc.Route("{id}")]
 
         public IActionResult Delete([FromRoute] int id){
-            var blogPostModel = _context.BlogPosts.FirstOrDefault(x => x.Id == id);
+            var blogPostModel = _context.BlogPosts.FirstOrDefault(x => x.UserId == id);
 
             if(blogPostModel == null){
                return NotFound();
