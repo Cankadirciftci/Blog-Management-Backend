@@ -29,28 +29,36 @@ namespace BlogManagement.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDto loginDto)
         {
-            var user = Authenticate(loginDto);
+            // var user = _context.Users.SingleOrDefault(u =>u.Username == loginDto.Username);
+            // if (user == null || !BCrypt.Net.BCrypt.Verify(loginDto.PasswordHash, user.Username))
+            // {
+            //     return Unauthorized();
+            // }
+            var user = _context.Users.SingleOrDefault(u => u.Username == loginDto.Username);
+            System.Console.WriteLine(user);
             if (user != null)
             {
                 var token = GenerateToken(user);
                 return Ok(new { token });
             }
             return Unauthorized();
+            // var token = GenerateToken(user);
+            // return Ok(new {token});
         }
 
         [HttpPost("register")]
         public IActionResult AddUser([FromBody] RegisterDto user)
         {
-            if (user == null || string.IsNullOrEmpty(user.Username) || string.IsNullOrEmpty(user.PasswordHash))
+            if (user == null || string.IsNullOrEmpty(user.Email) || string.IsNullOrEmpty(user.PasswordHash))
             {
                 return BadRequest("Geçersiz kullanici bilgileri.");
             }
  
-              user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
+              //user.PasswordHash = PasswordHasher.HashPassword(user.PasswordHash);
 
             var newUser = new User
             {
-                Username = user.Username,
+                Email = user.Email,
                 PasswordHash = user.PasswordHash
             };
 

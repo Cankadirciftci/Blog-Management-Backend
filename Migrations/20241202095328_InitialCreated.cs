@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace BlogManagement.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class InitialCreated : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -17,8 +17,9 @@ namespace BlogManagement.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    PasswordHash = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -57,7 +58,9 @@ namespace BlogManagement.Migrations
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     BlogPostId = table.Column<int>(type: "int", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
-                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Author = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    BlogPostId1 = table.Column<int>(type: "int", nullable: true),
+                    UserId1 = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -69,11 +72,20 @@ namespace BlogManagement.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
+                        name: "FK_Comments_BlogPosts_BlogPostId1",
+                        column: x => x.BlogPostId1,
+                        principalTable: "BlogPosts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
                         name: "FK_Comments_Users_UserId",
                         column: x => x.UserId,
                         principalTable: "Users",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Comments_Users_UserId1",
+                        column: x => x.UserId1,
+                        principalTable: "Users",
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -87,9 +99,19 @@ namespace BlogManagement.Migrations
                 column: "BlogPostId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Comments_BlogPostId1",
+                table: "Comments",
+                column: "BlogPostId1");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Comments_UserId",
                 table: "Comments",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Comments_UserId1",
+                table: "Comments",
+                column: "UserId1");
         }
 
         /// <inheritdoc />

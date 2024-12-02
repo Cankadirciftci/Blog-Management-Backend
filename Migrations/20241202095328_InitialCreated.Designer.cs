@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BlogManagement.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20241015121708_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20241202095328_InitialCreated")]
+    partial class InitialCreated
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -69,6 +69,9 @@ namespace BlogManagement.Migrations
                     b.Property<int>("BlogPostId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("BlogPostId1")
+                        .HasColumnType("int");
+
                     b.Property<string>("Content")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -79,11 +82,18 @@ namespace BlogManagement.Migrations
                     b.Property<int>("UserId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("UserId1")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("BlogPostId");
 
+                    b.HasIndex("BlogPostId1");
+
                     b.HasIndex("UserId");
+
+                    b.HasIndex("UserId1");
 
                     b.ToTable("Comments");
                 });
@@ -96,12 +106,13 @@ namespace BlogManagement.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PasswordHash")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -123,16 +134,24 @@ namespace BlogManagement.Migrations
             modelBuilder.Entity("BlogManagement.Models.Comment", b =>
                 {
                     b.HasOne("BlogManagement.Models.BlogPost", "BlogPost")
-                        .WithMany("Comments")
+                        .WithMany()
                         .HasForeignKey("BlogPostId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BlogManagement.Models.User", "User")
+                    b.HasOne("BlogManagement.Models.BlogPost", null)
                         .WithMany("Comments")
+                        .HasForeignKey("BlogPostId1");
+
+                    b.HasOne("BlogManagement.Models.User", "User")
+                        .WithMany()
                         .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
+                        .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
+
+                    b.HasOne("BlogManagement.Models.User", null)
+                        .WithMany("Comments")
+                        .HasForeignKey("UserId1");
 
                     b.Navigation("BlogPost");
 

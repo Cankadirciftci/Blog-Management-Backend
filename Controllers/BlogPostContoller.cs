@@ -32,7 +32,7 @@ namespace BlogManagement.Controllers
         [HttpGet("{id}")]
         public IActionResult GetById([FromRoute] int id){
             var post = _context.BlogPosts.FirstOrDefault(p => p.UserId == id); 
-             Console.WriteLine($"posts: {post}");
+             
             if(post == null){
                 return NotFound();
             }
